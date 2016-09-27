@@ -13,8 +13,7 @@ qwp.dialog = {
             content : '&nbsp',
             width : 380,
             height : 100,
-            'z-index' : '99999998',
-            'margin-top' : '36px'
+            'z-index' : '99999998'
         });
         if (qwp.components && qwp.components.dialogs) {
             var dialogs = qwp.components.dialogs;
