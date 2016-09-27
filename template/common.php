@@ -49,7 +49,7 @@ function qwp_render_header() {
 }
 function qwp_render_footer() {
 ?>
-<script src="js/jquery-1.11.3.min.js<?php echo_product_version();?>"></script>
+<script src="js/jquery-2.0.3.min.js<?php echo_product_version();?>"></script>
 <script src="js/jquery-ui-1.11.4.min.js<?php echo_product_version();?>"></script>
 <script src="js/bootstrap.min.js<?php echo_product_version();?>"></script>
 <script src="js/jquery.slimscroll.min.js<?php echo_product_version();?>"></script>
