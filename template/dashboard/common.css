@@ -1,0 +1,6 @@
+.content-wrapper {
+    margin-left: 0!important;
+}
+.content-wrapper > .content {
+    padding-top: 6px!important;
+}
