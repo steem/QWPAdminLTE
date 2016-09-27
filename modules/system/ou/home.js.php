@@ -73,7 +73,6 @@ function delUser(ids) {
 }
 function initPage(){
     qwp.table.create('#users-table', tableName, {
-        fetchData: 'fetchUsersData',
         selectable: true,
         simpleSearch: 'search_form',
         advSearch: 'adv_search_form',

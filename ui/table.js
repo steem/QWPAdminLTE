@@ -376,7 +376,7 @@ qwp.table = {
                 var newDir = 'desc', f = $(this).data("field");
                 if (option.sortf == f) newDir = option.sort == "asc" ? "desc" : "asc";
                 if (option.fetchData) return window[option.fetchData](0, 0, f, newDir, tableName);
-                qwp.to(newUrl, {sortf:f, sort:newDir});
+                qwp.table.load(tableName, false, 0, 0, f, newDir);
             });
             p.prepend($h.i('&nbsp', qwp.ui.addTooltip({'data-placement': 'bottom', title: qwp.table.txtSortDesc(dir)})));
         }
@@ -611,7 +611,7 @@ qwp.table = {
             qwp.fn(option.fetchData)(page, option.psize, null, null, tableName);
             return false;
         }
-        qwp.table.toPage(page, option.psize, null, null, tableName);
+        qwp.table.load(tableName, false, page, option.psize);
         return false;
     },
     _updateTopRightHtml: function(tableName, option, total) {
