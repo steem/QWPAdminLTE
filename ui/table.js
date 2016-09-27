@@ -18,7 +18,11 @@ qwp.table = {
         if (btns.new) toolbar += qwp.table._createBtn(btns.new, 'New', 'btn-primary', 'plus-sign');
         if (btns.edit) toolbar += qwp.table._createBtn(btns.edit, 'Edit', 'btn-warning', 'edit');
         if (btns.del) toolbar += qwp.table._createBtn(btns.del, 'Delete', 'btn-danger', 'trash');
-        if (option.advSearch && !option.simpleSearch) toolbar += qwp.table._createBtn(btns.search, 'Search', 'btn-info', 'search');
+        if (option.advSearch && !option.simpleSearch) {
+            toolbar += qwp.table._createBtn({
+                click: qwp.table._showSearchOptions
+            }, 'Search', 'btn-info', 'search');
+        }
         if (btns.addons) {
             for (var i = 0, cnt = btns.addons.length; i < cnt; ++i) {
                 toolbar += qwp.table._createBtn(btns.addons[i]);
@@ -50,10 +54,7 @@ qwp.table = {
             qwp.loading.overlay.create(opsRow);
         }
         if (option.hideOps) $(opsRow).hide();
-        if (option.simpleSearch) qwp.table.leftHtml(tableName, option.simpleSearch);
-        if (option.advSearch) {
-            qwp.table._initSearch(tableName, option);
-        }
+        qwp.table._initSearch(tableName, option);
     },
     addRows: function(tableName, data, prepend) {
         if (!data) return;
@@ -211,10 +212,29 @@ qwp.table = {
     },
     load: function(tableName, notes, page, psize, sortf, sort, op, params, noRemoveNotice) {
         qwp.table.loading(tableName);
-        qwp.notice(notes.success ? notes.success : $L('Table data is loading...'));
-        if (!op) op = 'list';
+        var option = $(qwp.table.container(tableName)).data('option');
+        if (!notes) notes = option.loadingNotes;
+        qwp.notice(notes && notes.success ? notes.success : $L('Table data is loading...'));
+        if (!op) op = option.listOp ? option.listOp : 'list';
+        var searchForm = false, tmpSearch;
+        if (option.simpleSearch) searchForm = $('#' + option.simpleSearch).serialize();
+        if (option.advSearch) {
+            tmpSearch = $('#' + option.advSearch).serialize();
+            if (tmpSearch) {
+                if (searchForm) searchForm += '&';
+                searchForm += tmpSearch;
+            }
+        }
+        if (params) {
+            if (searchForm) {
+                if (!qwp.isString(params)) params = $.param(params);
+                searchForm += '&' + params;
+            } else {
+                searchForm = params;
+            }
+        }
         qwp.get({
-            url:qwp.table._createOpsURI(tableName, op, page, psize, sortf, sort, params),
+            url:qwp.table._createOpsURI(tableName, op, page, psize, sortf, sort, searchForm),
             quiet: true,
             timeout: 180000,
             fn:function(res, data) {
@@ -224,7 +244,7 @@ qwp.table = {
                     var option = $(qwp.table.container(tableName)).data('option');
                     if (option.onLoadData) qwp.fn(option.onLoadData)(data, page, psize, sortf, sort, tableName);
                 } else {
-                    qwp.notice(res.msg ? res.msg : (notes.failed ? notes.failed : $L('Failed to load table data')));
+                    qwp.notice(res.msg ? res.msg : (notes && notes.failed ? notes.failed : $L('Failed to load table data')));
                     qwp.table.stopLoading(tableName);
                 }
             }
@@ -694,7 +714,31 @@ qwp.table = {
         return false;
     },
     _initSearch: function(tableName, option) {
-
+        if (option.simpleSearch) {
+            qwp.table.leftHtml(tableName, qwp.ui.tmpl(option.simpleSearch), true);
+            $('#' + option.simpleSearch + " .btn[mtag='reset']").click(function () {
+                qwp.form.reset('#' + option.simpleSearch);
+                qwp.table.load(tableName);
+            }).attr('title', $L('Reset the search form values'));
+            $('#' + option.simpleSearch + " .btn[mtag='search']").click(function () {
+                qwp.table.load(tableName);
+            }).attr('title', $L('Click to search'));
+        }
+        if (!option.advSearch) return;
+        $('#control-sidebar-search-tab').html(qwp.ui.tmpl(option.advSearch));
+        if (option.simpleSearch) {
+            $('#' + option.simpleSearch + " .btn[mtag='adv']").click(qwp.table._showSearchOptions).attr('title', $L('Show adavance search options'));
+        }
+        $('#' + option.advSearch + " .btn[mtag='reset'").click(function () {
+            qwp.form.reset('#' + option.advSearch);
+            qwp.table.load(tableName);
+        }).attr('title', $L('Click to search'));
+        $('#' + option.advSearch + " .btn[mtag='search'").click(function () {
+            qwp.table.load(tableName);
+        }).attr('title', $L('Click to search'));
+    },
+    _showSearchOptions: function (e) {
+        toggleSidebar(e);
     },
     _resizeTimer:{},
     _fnResize:{}

@@ -21,9 +21,6 @@ qwp_render_header();
                     <?php qwp_tmpl_render_nav();?>
                     <?php render_notification_nav();?>
                     <?php render_user_nav();?>
-                    <li>
-                        <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-                    </li>
                 </ul>
             </div>
         </nav>

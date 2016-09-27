@@ -5,15 +5,11 @@ qwp_db_get_table_header_from_modal($user_modal, $users_header);
 ?>
 <script>
 var needReset = false, tableName = 'users', loadingNotes = {success: $L('Users data is loading...'), failed: $L('Failed to load user data')};
-function fetchUsersData(page, psize, sortf, sort) {
-    qwp.table.load(tableName, loadingNotes, page, psize, sortf, sort, 'list_user', $('#search_form').serialize());
-    return false;
-}
 function userOpsCallback(res, data, params) {
     if (params.ops == 'add') {
         if (res.ret) {
             needReset = true;
-            fetchUsersData();
+            qwp.table.load(tableName);
         } else {
             needReset = false;
         }
@@ -71,20 +67,18 @@ function delUser(ids) {
         url:qwp.uri.currentOps('del'),
         params: {f: ids.join(',')},
         fn: function(res) {
-            if (res.ret) fetchUsersData();
+            if (res.ret) qwp.table.load(tableName);
         }
     });
 }
-function toggleSearch() {
-    $('.qwp-search').toggleClass('hide');
-    $('#search-toggle').toggleClass('active');
-    qwp.table.resize(tableName);
-}
-qwp.r(function(){
+function initPage(){
     qwp.table.create('#users-table', tableName, {
         fetchData: 'fetchUsersData',
         selectable: true,
-        advSearch: true,
+        simpleSearch: 'search_form',
+        advSearch: 'adv_search_form',
+        loadingNotes: loadingNotes,
+        listOp: 'list_user',
         getRowDetail: function(r) {
             return "&nbsp; This is user: {0}'s detail information".format(r.id);
         },
@@ -114,15 +108,11 @@ qwp.r(function(){
             }
         },
         topCols:{
-            left:4,
-            right:8
+            left:5,
+            right:7
         },
         header:<?php echo_json($users_header)?>
     });
-    $('.qwp-search > .close').click(toggleSearch);
-    fetchUsersData();
-});
-qwp.r(function(){
-    qwp.search.attach('#search_form');
-});
+    qwp.table.load(tableName);
+}
 </script>

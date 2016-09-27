@@ -103,3 +103,27 @@ function render_user_nav()
 </li>
 <?php
 }
+function render_side_bar() {
+    global $qwp_show_settings;
+?>
+<aside class="control-sidebar control-sidebar-light">
+    <a href="#" style="position: absolute;right: 6px;z-index: 1;" title="<?php EL('Close side bar');?>"><i mtag="close" class="fa fa-close"></i></a>
+    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+        <li class="active"><a href="#control-sidebar-search-tab" style="font-weight: bold" data-toggle="tab"><i class="fa fa-search"></i> <?php EL('Search Options');?></a></li>
+<?php if (isset($qwp_show_settings) && $qwp_show_settings) { ?>
+        <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+<?php }?>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="control-sidebar-search-tab"></div>
+<?php if (isset($qwp_show_settings) && $qwp_show_settings) { ?>
+        <div class="tab-pane" id="control-sidebar-settings-tab"></div>
+<?php }?>
+    </div>
+</aside>
+<!-- /.control-sidebar -->
+<!-- Add the sidebar's background. This div must be placed
+     immediately after the control sidebar -->
+<div class="control-sidebar-bg"></div>
+<?php
+}

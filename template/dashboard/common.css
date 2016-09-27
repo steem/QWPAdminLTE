@@ -3,4 +3,5 @@
 }
 .content-wrapper > .content {
     padding-top: 6px!important;
+    padding-bottom: 0!important;
 }

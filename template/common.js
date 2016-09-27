@@ -27,6 +27,20 @@ function createICheckbox(p) {
         checkboxClass: 'icheckbox_square-blue',
         radioClass: 'iradio_square-blue'
     });
+    $('.control-sidebar').click(function (e) {
+        if (e.target.tagName === 'I' && $(e.target).attr('mtag') === 'close') toggleSidebar(e);
+    });
+}
+function toggleSidebar(e) {
+    if (e) e.preventDefault();
+    var o = $.AdminLTE.options.controlSidebarOptions;
+    var sidebar = $(o.selector);
+    var c = $.AdminLTE.controlSidebar;
+    if (!sidebar.hasClass('control-sidebar-open') && !$('body').hasClass('control-sidebar-open')) {
+        c.open(sidebar, o.slide);
+    } else {
+        c.close(sidebar, o.slide);
+    }
 }
 function initAdminLTE() {
     qwp.ui.push(createICheckbox);

@@ -12,18 +12,34 @@ qwp_create_dialog_with_form("dialog_user", array(
     'height' => '280px',
 ), 'user');
 ?>
-<div class="user-div">
-<div class="row well qwp-search hide">
-    <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <form class="form-inline" id="search_form" onsubmit="return false;">
+<qwp tmpl="search_form">
+    <form id="search_form" class="form-inline tbl-search-form" name="all-message" onsubmit="return false">
+        <div class="input-group">
+            <input name="s[u.account]" type="text" style="width:80px;" class="form-control" placeholder="<?php EL('Account');?>">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-warning" mtag="reset"><i class="fa fa-remove"></i></button>
+                <button type="button" class="btn btn-info" mtag="search"><i class="fa fa-search"></i></button>
+                <button type="button" class="btn btn-primary" mtag="adv"><i class="fa fa-search-plus"></i></button>
+            </div>
+        </div>
+    </form>
+</qwp>
+<qwp tmpl="adv_search_form">
+    <form class="form-vertical" id="adv_search_form" onsubmit="return false;">
         <div class="form-group">
-            <input type="text" name="s[account]" class="form-control" placeholder="Account">
+            <div class="btn-group">
+                <button mtag="reset" type="reset" class="btn btn-warning btn-sm"><i class="fa fa-remove"></i></button>
+                <button mtag="search" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+            </div>
         </div>
         <div class="form-group">
             <input type="text" name="s[name]" class="form-control" placeholder="Name">
         </div>
         <div class="form-group">
             <input type="text" name="s[email]" class="form-control" placeholder="Email">
+        </div>
+        <div class="form-group">
+            <input type="text" name="s[phone]" class="form-control" placeholder="Phone">
         </div>
         <div class="form-group">
             <select name="s[gender]" class="form-control">
@@ -49,9 +65,8 @@ qwp_create_dialog_with_form("dialog_user", array(
                 }?>
             </select>
         </div>
-        <button onclick="fetchUsersData()" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-search"></i></button>
-        <button type="reset" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-remove"></i></button>
     </form>
-</div>
+</qwp>
+<div class="user-div">
 <div id="users-table" class="row qwp-table"></div>
 </div>

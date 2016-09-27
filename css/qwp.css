@@ -168,7 +168,7 @@ div[qwp='container'] > .slimScrollDiv > .table-responsive{
     padding-top: 5px!important;
     padding-bottom: 0!important;
 }
-@media screen and (max-width: 1032px) {
+@media screen and (max-width: 1050px) {
     .toolbar > .btn-group > .btn > span {
         display: none;
     }

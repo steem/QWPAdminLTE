@@ -1,0 +1,12 @@
+#control-sidebar-search-tab form > .form-group {
+    margin-bottom: 6px;
+}
+.tbl-search-form input, .tbl-search-form button, .tbl-search-form select {
+    height: 30px!important;
+    padding-left: 4px!important;
+    padding-right: 4px!important;
+}
+.tbl-search-form .btn {
+    padding-top: 0!important;
+    padding-bottom: 0!important;
+}
