@@ -33,12 +33,12 @@ function qwp_tmpl_render_sub_modules() {
                 $module_active, qwp_uri_module($uri), $module['desc'], $icon);
             foreach ($module['sub'] as &$item) {
                 $active = '';
-                $text_class = 'text-red';
+                $text_class = '';
                 if ($item[0] == $MODULE_URI) {
                     $active = ' class="active"';
-                    $text_class = 'text-aqua';
+                    $text_class = ' text-aqua';
                 }
-                $html .= format('<li{0}><a href="{1}"><i class="fa fa-circle-o {3}"></i> <span>{2}</span></a></li>',
+                $html .= format('<li{0}><a href="{1}"><i class="fa fa-circle-o{3}"></i> <span>{2}</span></a></li>',
                     $active, qwp_uri_module($item[0]), $item[1], $text_class);
             }
             $html .= '</ul></li>';
