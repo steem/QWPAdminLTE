@@ -6,7 +6,7 @@ qwp_db_get_table_header_from_modal($user_modal, $users_header);
 <script>
 var needReset = false, tableName = 'users', loadingNotes = {success: $L('Users data is loading...'), failed: $L('Failed to load user data')};
 function userOpsCallback(res, data, params) {
-    if (params.ops == 'add') {
+    if (params.ops == 'add_user') {
         if (res.ret) {
             needReset = true;
             qwp.table.load(tableName);
@@ -16,7 +16,7 @@ function userOpsCallback(res, data, params) {
     }
 }
 function addNewUser() {
-    qwp.form.action('#user_info', 'add', {
+    qwp.form.action('#user_info', 'add_user', {
         reset: needReset,
         dialog: ['dialog_user', $L('Add a new user')],
         msgBox: {
@@ -39,7 +39,7 @@ function editUser() {
     qwp.notice($L('User information is loading, please wait...'));
     qwp.get({
         quiet: true,
-        url: qwp.uri.currentOps('list', {id: id}),
+        url: qwp.uri.currentOps('list_user', {id: id}),
         fn:function(res, data) {
             if (!res.ret) return;
             if (!data || !data.length) {
@@ -50,7 +50,7 @@ function editUser() {
             needReset = true;
             qwp.form.reset('#user_info');
             qwp.form.fill('#user_info', data[0], true);
-            qwp.form.action('#user_info', 'edit', {
+            qwp.form.action('#user_info', 'edit_user', {
                 reset: false,
                 dialog: ['dialog_user', $L('Edit user information')],
                 msgBox: {
@@ -64,7 +64,7 @@ function editUser() {
 }
 function delUser(ids) {
     qwp.post({
-        url:qwp.uri.currentOps('del'),
+        url:qwp.uri.currentOps('del_user'),
         params: {f: ids.join(',')},
         fn: function(res) {
             if (res.ret) qwp.table.load(tableName);
