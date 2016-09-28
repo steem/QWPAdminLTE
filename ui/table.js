@@ -615,18 +615,20 @@ qwp.table = {
         return false;
     },
     _updateTopRightHtml: function(tableName, option, total) {
+        var tpr = $('#' + tableName + '_top_right');
         if (option.noPager || option.rightHtml) {
-            if (option.rightHtml) $('#' + tableName + '_top_right').html(option.rightHtml);
+            if (option.rightHtml) tpr.html(option.rightHtml);
             return;
         }
+        var psize = option.psize, totalPage = Math.ceil(total / psize);
+        if (option.page > totalPage) option.page = totalPage;
+        if (option.page === 0) option.page = 1;
         var pagerFn = "return qwp.table._goPage('"+tableName+"',";
-            psize = option.psize,
             curPage = option.page,
-            totalPage = Math.ceil(total / psize),
-            summary = $h.form($h.a(totalPage + ' / ' + total, qwp.ui.addTooltip({'class':'btn btn-info btn-sm', title:$L('Total pages and total records')})) +
-                $h.input(qwp.ui.addTooltip({value:curPage,'class':'table-pager-input form-control',
-                    qwp:'number', props:"defaultValue=1|minValue=1|enter=qwp.table._goPage('"+tableName+"', this.value)",
-                    title:$L('Current page, press ENTER to switch page.')})), {'class':'form-inline'}),
+            summary = $h.li($h.a($h.span(totalPage + ' / ' + total), qwp.ui.addTooltip({title:$L('Total pages and total records'), 'class': 'table-pager-summary'}))) +
+                    $h.li($h.a($h.span(curPage) + $h.input({onblur: "this.parentNode.className=this.parentNode.className.replace('open', '')", value:curPage, type:'text', qwp:'number', props:"defaultValue=1|minValue=1|enter=qwp.table._goPage('"+tableName+"', this.value)"}),
+                        qwp.ui.addTooltip({value:curPage,'class':'table-pager-input',
+                        title:$L('Current page, press ENTER to switch page.')}))),
             h = "",
             showCnt = 2,
             txtFirstPage = $L('First page'),
@@ -688,7 +690,14 @@ qwp.table = {
         }
         h += $h.li($h.a($h.i('',{'class': qwp.ui.icon('refresh', true)}), {'onclick':pagerFn + curPage + fnSuffix,'href':'#',
             'data-rel':'tooltip','data-original-title':txtRefreshPage,'data-placement':'left'}));
-        $('#' + tableName + '_top_right').html($h.div($h.nav($h.ul(h,{'class':'pagination'})),{qwp:'pager-right'}) + $h.div(summary, {qwp:'pager-left'}));
+        tpr.html($h.nav($h.ul(summary + h,{'class':'pagination'})));
+        $('#' + tableName + '_top_right .table-pager-input').click(function () {
+            $('#' + tableName + '_top_right .table-pager-input').addClass('open');
+            $('#' + tableName + '_top_right .table-pager-input > input').focus().select();
+        });
+        $('#' + tableName + '_top_right .table-pager-input > input').change(function (o) {
+            $('#' + tableName + '_top_right .table-pager-input > span').text($(o.target).val());
+        });
     },
     _createResize: function(name) {
         var resize = function(){
