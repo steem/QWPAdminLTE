@@ -53,6 +53,51 @@ function qwp_save_acls_to_db(&$acls) {
         $acls = array();
         qwp_get_all_acls_in_directory($acls);
     }
+    $modules = &$acls['modules'];
+    $pages = &$acls['pages'];
+    $ops = &$acls['ops'];
+    $identities = array();
+    db_delete('sys_modules')->execute();
+    db_query('ALTER TABLE sys_modules AUTO_INCREMENT=1');
+    foreach ($modules as $k => &$v) {
+        $items = explode('-', $k);
+        array_pop($items);
+        if (count($items) === 0) $parent = '';
+        else $parent = implode('-', $items);
+        $f = array(
+            'name' => $v,
+            'identity' => $v,
+            'parent' => isset($identities[$parent]) ? $identities[$parent] : '0-',
+            'type' => 'm',
+            'seq' => '1',
+        );
+        $id = db_insert('sys_modules')->fields($f)->execute();
+        $identities[$k] = $f['parent'] . $id . '-';
+    }
+    foreach ($pages as $k => &$v) {
+        foreach ($v as $page => $name) {
+            $f = array(
+                'name' => $page,
+                'identity' => $page,
+                'parent' => $identities[$k],
+                'type' => 'p',
+                'seq' => '1',
+            );
+            db_insert('sys_modules')->fields($f)->execute();
+        }
+    }
+    foreach ($ops as $k => &$v) {
+        foreach ($v as $page => $name) {
+            $f = array(
+                'name' => $page,
+                'identity' => $page,
+                'parent' => $identities[$k],
+                'type' => 'op',
+                'seq' => '1',
+            );
+            db_insert('sys_modules')->fields($f)->execute();
+        }
+    }
 }
 function qwp_scan_acls_in_directory(&$modules, &$pages, &$ops, $dir, $level, $parent) {
     $files = scandir($dir);
@@ -99,6 +144,10 @@ function qwp_get_all_acls_in_directory(&$acls) {
     $pages = &$acls['pages'];
     $ops = &$acls['ops'];
     qwp_scan_acls_in_directory($modules, $pages, $ops, QWP_MODULE_ROOT, 0, '');
+    ksort($modules, SORT_STRING);
+    ksort($pages, SORT_STRING);
+    ksort($ops, SORT_STRING);
+    //qwp_save_acls_to_db($acls);
 }
 function qwp_get_all_acls(&$acls) {
 
