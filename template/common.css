@@ -1,3 +1,6 @@
+.main-header .navbar-nav .notifications-menu:hover, .main-header .navbar-nav .notifications-menu:visited, .main-header .navbar-nav .notifications-menu.open {
+    background-color: #5c941b!important;
+}
 #control-sidebar-search-tab form > .form-group {
     margin-bottom: 6px;
 }
