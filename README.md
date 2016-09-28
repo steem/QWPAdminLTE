@@ -13,6 +13,6 @@ You need to import tables into mysql. The sql files are in db directory.
 
 * Small device
 
-![Sample 1](https://github.com/steem/QWPAdminLTE/tree/master/doc/small_device1.jpg)
+![Snapshot 1](https://github.com/steem/QWPAdminLTE/tree/master/doc/small_device1.jpg)
 
-![Sample 2](https://github.com/steem/QWPAdminLTE/tree/master/doc/small_device2.jpg)
+![Snapshot 2](https://github.com/steem/QWPAdminLTE/tree/master/doc/small_device2.jpg)
