@@ -20,7 +20,7 @@ qwp.table = {
         if (btns.del) toolbar += qwp.table._createBtn(btns.del, 'Delete', 'btn-danger', 'trash');
         if (option.advSearch && !option.simpleSearch) {
             toolbar += qwp.table._createBtn({
-                click: qwp.table._showSearchOptions
+                click: function(e){qwp.table._showSearchOptions(e, tableName);}
             }, 'Search', 'btn-info', 'search');
         }
         if (btns.addons) {
@@ -736,7 +736,7 @@ qwp.table = {
         if (!option.advSearch) return;
         $('#control-sidebar-search-tab').html(qwp.ui.tmpl(option.advSearch));
         if (option.simpleSearch) {
-            $('#' + option.simpleSearch + " .btn[mtag='adv']").click(qwp.table._showSearchOptions).attr('title', $L('Show adavance search options'));
+            $('#' + option.simpleSearch + " .btn[mtag='adv']").click(function(e){qwp.table._showSearchOptions(e, tableName);}).attr('title', $L('Show advance search options'));
         }
         $('#' + option.advSearch + " .btn[mtag='reset'").click(function () {
             qwp.form.reset('#' + option.advSearch);
@@ -746,8 +746,19 @@ qwp.table = {
             qwp.table.load(tableName);
         }).attr('title', $L('Click to search'));
     },
-    _showSearchOptions: function (e) {
+    _showSearchOptions: function (e, tableName) {
         toggleSidebar(e);
+        var option = $(qwp.table.container(tableName)).data('option')
+        var o = $('#' + option.advSearch + ' .form-group input');
+        if (o.length > 0) {
+            o[0].focus();
+            return;
+        }
+        o = $('#' + option.advSearch + ' .form-group select');
+        if (o.length > 0) {
+            o[0].focus();
+            return;
+        }
     },
     _resizeTimer:{},
     _fnResize:{}
