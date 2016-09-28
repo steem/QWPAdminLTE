@@ -15,50 +15,99 @@ function qwp_get_visitor_acls(&$acls) {
     );
 }
 /*
-function qwp_get_role_acls(&$acls, $role_id) {
-    $acls = array(
-        'modules' => array(
-            'portal' => 1,
-            'sample' => 'Samples',
-            'users' => 'Users',
-            'settings' => 'Settings',
-            'help' => 'Help',
-            'sample-sub' => 1,
-            'sample-sub-sub' => 1,
+privilege structure:
+$acls = array(
+    'modules' => array(
+        'sample' => 'Samples',
+        'sample-sub' => 1,
+        'sample-sub-sub' => 1,
+    ),
+    'pages' => array(
+        'sample' => array(
+            'form' => 'Form sample',
+            'table' => 'Table sample',
         ),
-        'pages' => array(
-            'portal' => array(
-                'sample' => 1,
-            ),
-            'sample' => array(
-                'form' => 'Form sample',
-                'table' => 'Table sample',
-            ),
-            'sample-sub' => array(
-                'test' => 1,
-            ),
+        'sample-sub' => array(
+            'test' => 1,
         ),
-        'ops' => array(
-            'sample#form' => array(
-                'edit' => 1,
-            ),
-            'sample#table' => array(
-                'list' => 1,
-                'get_types' => 1,
-            ),
-            'users' => array(
-                'list' => 1,
-                'add' => 1,
-                'edit' => 1,
-                'del' => 1,
-            ),
+    ),
+    'ops' => array(
+        'sample#form' => array(
+            'edit' => 1,
         ),
-    );
-}*/
+        'sample#table' => array(
+            'list' => 1,
+            'get_types' => 1,
+        ),
+        'users' => array(
+            'list' => 1,
+            'add' => 1,
+            'edit' => 1,
+            'del' => 1,
+        ),
+    ),
+);
+*/
+function qwp_save_acls_to_db(&$acls) {
+    if (!$acls || count($acls) === 0) {
+        $acls = array();
+        qwp_get_all_acls_in_directory($acls);
+    }
+}
+function qwp_scan_acls_in_directory(&$modules, &$pages, &$ops, $dir, $level, $parent) {
+    $files = scandir($dir);
+    foreach ($files as $item) {
+        if (is_dot_dir($item)) continue;
+        $file_path = join_paths($dir, $item);
+        if (is_dir($file_path)) {
+            if ($level === 0 && $item === 'passport') continue;
+            $new_parent = $parent . ($parent ? '-' : '') . $item;
+            $modules[$new_parent] = $item;
+            qwp_scan_acls_in_directory($modules, $pages, $ops, $file_path, $level + 1, $new_parent);
+        } else if ($level !== 0) {
+            if (!ends_with($item, '.php') || starts_with($item, 'home') ||
+                starts_with($item, 'form_') || starts_with($item, 'common.')) continue;
+            $dots = explode('.', $item);
+            if (count($dots) !== 2) continue;
+            // remove .php
+            $item = substr($item, 0, strlen($item) - 4);
+            $is_op = strrpos($item, 'ops_');
+            if ($is_op === 0) {
+                // module ops
+                if (!isset($ops[$parent])) $ops[$parent] = array();
+                $op_name = substr($item, 4);
+                $ops[$parent][$op_name] = $op_name;
+            } else if ($is_op !== false) {
+                // page ops
+                $op_name = substr($item, $is_op + 1);
+                $page_key = $parent . '#' . substr($item, 0, $is_op);
+                if (!isset($ops[$page_key])) $ops[$page_key] = array();
+                $ops[$page_key][$op_name] = $op_name;
+            } else {
+                // page
+                if (!isset($pages[$parent])) $pages[$parent] = array();
+                $pages[$parent][$item] = $item;
+            }
+        }
+    }
+}
+function qwp_get_all_acls_in_directory(&$acls) {
+    $acls['modules'] = array();
+    $acls['pages'] = array();
+    $acls['ops'] = array();
+    $modules = &$acls['modules'];
+    $pages = &$acls['pages'];
+    $ops = &$acls['ops'];
+    qwp_scan_acls_in_directory($modules, $pages, $ops, QWP_MODULE_ROOT, 0, '');
+}
 function qwp_get_all_acls(&$acls) {
 
 }
 function qwp_get_user_acls(&$acls) {
+    if (IN_DEBUG && qwp_user_is_admin()) {
+        qwp_get_all_acls_in_directory($acls);
+        return;
+    }
     global $USER;
 
     $q = db_select('sys_modules', 'm');
