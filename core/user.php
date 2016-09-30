@@ -37,6 +37,11 @@ function qwp_create_visitor_user() {
 
     $USER = new QWPUser(0, QWP_ROLE_VISITOR, '', '', L('Visitor'));
 }
+function qwp_get_logined_user_id() {
+    global $USER;
+
+    return $USER->uid;
+}
 function qwp_echo_user_name() {
     global $USER;
     echo($USER->name);

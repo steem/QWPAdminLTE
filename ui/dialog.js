@@ -37,7 +37,7 @@ qwp.dialog = {
             opt.content = qwp.ui.tmpl(id);
         }
         if (!opt['z-index']) opt['z-index'] = '99999997';
-        if (!opt['margin-top']) opt['margin-top'] = '20px';
+        if (!opt['margin-top']) opt['margin-top'] = '3px';
         if (!opt.title) opt.title = '';
         $('body').append(qwp.dialog.tmpl.format(opt));
         $('#' + id).data('opt', opt);
@@ -135,7 +135,7 @@ qwp.dialog = {
     },
     _updateDialogSize: function(did, opt) {
         var id = qwp.id(did);
-        var deltY = 100;
+        var deltY = 78;
         if (!opt) opt = $(id).data('opt');
         if (opt.max) {
             opt.height = $(window).height() - deltY;
