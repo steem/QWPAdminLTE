@@ -653,7 +653,7 @@ $h = {};
                     if (f.inResize) return;
                     f.inResize = true;
                     setTimeout(function(){
-                        fn(e);
+                        f(e);
                         f.inResize = false;
                     }, 200);
                 });
