@@ -734,7 +734,7 @@ qwp.table = {
             }).attr('title', $L('Click to search'));
         }
         if (!option.advSearch) return;
-        $('#control-sidebar-search-tab').html(qwp.ui.tmpl(option.advSearch));
+        setAdvSearchOption(qwp.ui.tmpl(option.advSearch));
         if (option.simpleSearch) {
             $('#' + option.simpleSearch + " .btn[mtag='adv']").click(function(e){qwp.table._showSearchOptions(e, tableName);}).attr('title', $L('Show advance search options'));
         }

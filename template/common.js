@@ -31,6 +31,9 @@ function createICheckbox(p) {
         if (e.target.tagName === 'I' && $(e.target).attr('mtag') === 'close') toggleSidebar(e);
     });
 }
+function setAdvSearchOption(h) {
+    $('#control-sidebar-search-tab').html(h);
+}
 function toggleSidebar(e) {
     if (e) e.preventDefault();
     var o = $.AdminLTE.options.controlSidebarOptions;

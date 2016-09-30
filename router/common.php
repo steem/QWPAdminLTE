@@ -210,7 +210,7 @@ function qwp_get_template_path() {
             return $file_path;
         }
     }
-    $file_path = QWP_TEMPLATE_ROOT . '/' . $MODULE_URI;
+    $file_path = QWP_TEMPLATE_ROOT . '/' . $MODULE_URI . '/page';
     if (is_dir($file_path)) {
         return $file_path;
     }
