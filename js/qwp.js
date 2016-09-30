@@ -647,8 +647,19 @@ $h = {};
                 qwp.ui._fns[i](p);
             }
         },
-        resize: function(f) {
-            $(window).resize(f);
+        resize: function(f, timer) {
+            if (timer) {
+                $(window).resize(function (e) {
+                    if (f.inResize) return;
+                    f.inResize = true;
+                    setTimeout(function(){
+                        fn(e);
+                        f.inResize = false;
+                    }, 200);
+                });
+            } else {
+                $(window).resize(f);
+            }
         },
         e: function(s) {
             s = $(s);
