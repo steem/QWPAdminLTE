@@ -193,15 +193,54 @@ div[qwp='container'] > .slimScrollDiv > .table-responsive{
     padding-top: 5px!important;
     padding-bottom: 0!important;
 }
-.qwp-list-header {
-    margin-left: 1px;
+.qwp-list-header .pagination {
+    margin: 0;
 }
-.qwp-list-header a {
-    padding: 1px 0;
+.qwp-list-header .pagination >li>a, .qwp-list-header .pagination >li>span {
+    padding: 0;
 }
-.qwp-list-header > input[qwp=number] {
-    height:23px;
-    width:23px;
+.qwp-list-search {
+    cursor: pointer;
+}
+.qwp-list-pager {
+    float: left;
+}
+.list-pager-count {
+    border-width: 0 0 0 1px!important;
+    padding-left: 2px!important;
+    min-width: 23px!important;
+}
+.list-pager-count:hover {
+    background: #fafafa!important;
+    color: #666!important;
+}
+.list-pager-input {
+    text-align: center;
+    min-width: 23px!important;
+    padding: 0;
+    border-radius: 0!important;
+    overflow: hidden;
+    background: white!important;
+    cursor: pointer;
+    color: black;
+}
+.list-pager-input:hover {
+    color: black;
+    background: white;
+}
+.list-pager-input > input{
+    display: none;
+    position: absolute;
+    z-index: 1;
+    height:18px;
+    top: 1px;
+    left: 1px;
+    border: 0;
+    text-align: center;
+}
+.list-pager-input.open > input{
+    display: block;
+    position: absolute;
 }
 .qwp-list-header .glyphicon-search, .qwp-list-s .dropdown-toggle {
     padding-left: 2px!important;
@@ -212,7 +251,7 @@ div[qwp='container'] > .slimScrollDiv > .table-responsive{
     margin-top: 1px;
     margin-right: 1px;
 }
-.qwp-list-s > input[type=checkbox] {
+.qwp-list-s input[type=checkbox] {
     min-width: 18px!important;
     width: 18px!important;
     height: 23px!important;
@@ -226,7 +265,7 @@ div[qwp='container'] > .slimScrollDiv > .table-responsive{
     float: right;
     position: relative;
     bottom: -5px;
-    right: -15px;
+    right: -14px;
 }
 .qwp-list-popover {
     position: absolute;

@@ -99,8 +99,8 @@ qwp.list = {
             if (option.onNoRecords) qwp.fn(option.onNoRecords)();
         }
         var hdr = qwp.list._h(name);
-        if (option.enablePager) $(hdr + ' span[qwp=count]').text(option.total).attr('title', $L('{0} pages, {1} records').format(option.total, data.total));
-        if (option.checkbox) $(hdr + '>.qwp-list-s>input')[0].checked = false;
+        if (option.enablePager) $(hdr + ' .list-pager-count').text(option.total).attr('title', $L('{0} pages, {1} records').format(option.total, data.total));
+        if (option.checkbox) $(hdr + '>.qwp-list-s input')[0].checked = false;
     },
     addItems: function(name, data, prepend, chkSelected) {
         $(qwp.list._s(name)).hide();
@@ -274,7 +274,7 @@ qwp.list = {
         }
         var pos = o.offset(), c = $(option.container);
         var h = $(window).height() - pos.top - qwp.ui.paddingTopBottom(o) - qwp.ui.marginBottom(o) - qwp.ui.borderBottomWidth(c) - qwp.ui.paddingBottom(c) - 8,
-            w = c.width() - qwp.ui.paddingLeftRight(c) - qwp.ui.borderLeftRightWidth(c);
+            w = c.width() - qwp.ui.paddingLeftRight(c) - qwp.ui.borderLeftRightWidth(c) - 2;
         if (option.heightDelta) h -= option.heightDelta;
         h -= hDelta;
         $(qwp.list._b(name)).css({height:h+'px',width:w+'px'}).slimscroll({height: h+'px',width: w+'px'});
@@ -293,7 +293,7 @@ qwp.list = {
             o = $(o.delegateTarget);
             if (option.onChkSelection) qwp.fn(option.onChkSelection)(o.val(), o[0].checked, r);
             o = $(qwp.list._b(name) + '>a>input[type=checkbox]:checked');
-            var e = $(qwp.list._h(name) + '>.qwp-list-s>input');
+            var e = $(qwp.list._h(name) + '>.qwp-list-s input');
             if (e.length > 0) e[0].checked = o.length > 0;
         });
     },
@@ -305,10 +305,17 @@ qwp.list = {
     _customize: function(name, option) {
         var container = qwp.list._h(name);
         if (option.enablePager || option.search || option.sortList || option.checkbox) {
-            if (!option.enablePager) {
-                $(container + '>.btn-info').hide();
-                $(container + '>span').hide();
-                $(container + '>input').hide();
+            if (option.enablePager) {
+                $(container + ' .list-pager-input').click(function (o) {
+                    o = $(o.delegateTarget);
+                    o.addClass('open');
+                    $(container + ' .list-pager-input input').focus().select().css('width', (o.width() - 2) + 'px');
+                });
+                $(container + ' .list-pager-input input').change(function (o) {
+                    $(container + ' .list-pager-input span').text($(o.target).val());
+                });
+            } else {
+                $(container + ' .qwp-list-pager').hide();
             }
             if (option.search) {
                 var s = qwp.list._s(name);
@@ -316,7 +323,7 @@ qwp.list = {
                 $(s + ' button[qwp=list-search-close]').click(function(){
                     $(qwp.list._s(name)).toggle(200);
                 });
-                $(container + '>.btn-success').click(function(){
+                $(container + ' .qwp-list-search').click(function(){
                     var p = $(qwp.list._b(name));
                     var o = p.offset();
                     $(qwp.list._s(name)).css('width', p.width() + 'px').css({left: '0', top: '0'}).toggle(200);
@@ -327,10 +334,15 @@ qwp.list = {
                     return false;
                 });
             } else {
-                $(container + '>.btn-success').hide();
+                $(container + ' .qwp-list-search').hide();
             }
             if (option.sortList) {
-                $(container + '>.qwp-list-s .dropdown-menu>li').click(function(e){
+                $(container + ' .qwp-list-s > ul > li').show();
+                $(container + " .qwp-list-s a[qwp=sort-options]").click(function(o){
+                    o = $(o.delegateTarget);
+                    $(container + ' .qwp-list-s .dropdown-menu').css({top: (o.position().top + o.height() + 1) + 'px', left: o.position().left + 'px'});
+                });
+                $(container + ' .qwp-list-s .dropdown-menu>li').click(function(e){
                     e = $(e.delegateTarget);
                     var option = qwp.list.opt(name), sortf = e.data('field');
                     if (option.sortf == sortf) return;
@@ -340,15 +352,14 @@ qwp.list = {
                     qwp.list.load(name);
                 });
             } else {
-                $(container + '>.qwp-list-s>a').hide();
-                $(container + '>.qwp-list-s>div').hide();
+                $(container + ' .qwp-list-s > li').hide();
             }
             if (option.checkbox) {
-                $(container + '>.qwp-list-s>input').change(function(e){
+                $(container + '>.qwp-list-s input').change(function(e){
                     qwp.list.checkAll(name, e.delegateTarget.checked);
                 });
             } else {
-                $(container + '>.qwp-list-s>input').hide();
+                $(container + '>.qwp-list-s input').hide();
             }
             if (option.autoHideHeader) {
                 $(option.container).mouseenter(function(){
@@ -415,18 +426,20 @@ qwp.list = {
     },
     _getTmpl: function() {
         return '<div class="qwp-list-header" id="qwp-list-header-{0}" style="display:none;margin-bottom: 1px">'+
-        '<a class="btn btn-info btn-xs" onclick="qwp.list._goPage(\'{0}\', \'f\')" href="#" title="'+$L('First page')+'" role="button"><i class="glyphicon glyphicon-step-backward"></i></a>'+
-        '<a class="btn btn-info btn-xs" onclick="qwp.list._goPage(\'{0}\', \'p\')" href="#" title="'+$L('Previous page')+'" role="button"><i class="glyphicon glyphicon-chevron-left"></i></a>'+
-        '<a class="btn btn-info btn-xs" onclick="qwp.list._goPage(\'{0}\', \'n\')" href="#" title="'+$L('Next page')+'" role="button"><i class="glyphicon glyphicon-chevron-right"></i></a>'+
-        '<a class="btn btn-info btn-xs" onclick="qwp.list._goPage(\'{0}\', \'l\')" href="#" title="'+$L('Last page')+'" role="button"><i class="glyphicon glyphicon-step-forward"></i></a>'+
-        '<input qwp="number" props="defaultValue=1|minValue=1|enter=qwp.list._goPage(\'{0}\', this.value)" type="text" size="2" value="1" title="'+$L('Press enter to switch page')+'">'+
-        '<a class="btn btn-success btn-xs"><i class="glyphicon glyphicon-search" title="'+$L('Click to show search options')+'"></i></a>'+
-        '<span class="label label-info" qwp="count" style="margin-left: 4px;font-size: 9px">0</span><i>&nbsp;</i>'+
+        '<div class="qwp-list-pager"><ul class="pagination"><li><a onclick="qwp.list._goPage(\'{0}\', \'f\')" href="#" title="'+$L('First page')+'" role="button"><i class="glyphicon glyphicon-step-backward"></i></a></li>'+
+        '<li><a onclick="qwp.list._goPage(\'{0}\', \'p\')" href="#" title="'+$L('Previous page')+'" role="button"><i class="glyphicon glyphicon-chevron-left"></i></a></li>'+
+        '<li><a onclick="qwp.list._goPage(\'{0}\', \'n\')" href="#" title="'+$L('Next page')+'" role="button"><i class="glyphicon glyphicon-chevron-right"></i></a></li>'+
+        '<li><a onclick="qwp.list._goPage(\'{0}\', \'l\')" href="#" title="'+$L('Last page')+'" role="button"><i class="glyphicon glyphicon-step-forward"></i></a></li>'+
+        '<li><a class="list-pager-input" title="'+$L('Press enter to switch page')+'"><span>1</span>' +
+        '<input onblur="this.parentNode.className=this.parentNode.className.replace(\' open\', \'\')" qwp="number" props="defaultValue=1|minValue=1|enter=qwp.list._goPage(\'{0}\', this.value)" type="text" size="2" value="1" title="'+$L('Press enter to switch page')+'"></a></li>'+
+        '<li><a class="qwp-list-search"><i class="glyphicon glyphicon-search" title="'+$L('Click to show search options')+'"></i></a></li>'+
+        '<li><a class="list-pager-count" qwp="count">0</a></li>'+
+        '</ul></div>'+
         '<div class="qwp-list-s">'+
-        '<div class="btn-group tooltip-info" title="'+$L('Click to show sort option')+'"><a class="btn-info btn btn-xs tooltip-info dropdown-toggle" data-toggle="dropdown" role="button"><i class="glyphicon glyphicon-sort-by-attributes"></i></a><ul class="dropdown-menu">{1}</ul></div>'+
-        '<a class="btn btn-info btn-xs" onclick="qwp.list._changeOrder(\'{0}\', this)" href="#" title="'+$L('Click to toggle sort order')+'" role="button"><i class="glyphicon glyphicon-arrow-down"></i></a>'+
-        '<input title="'+$L('Click to select all the items')+'" type="checkbox"></div>'+
-        '</div><div class="qwp-list" id="qwp-list-{0}" class="list-group"><div id="qwp-list-search-{0}" style="display: none;z-index: 3;position: absolute;"></div></div>';
+        '<ul class="pagination"><li><a qwp="sort-options" title="'+$L('Click to show sort option')+'" class="tooltip-info dropdown-toggle" data-toggle="dropdown" role="button"><i class="glyphicon glyphicon-sort-by-attributes"></i></a><ul class="dropdown-menu">{1}</ul></li>'+
+        '<li><a onclick="qwp.list._changeOrder(\'{0}\', this)" href="#" title="'+$L('Click to toggle sort order')+'" role="button"><i class="glyphicon glyphicon-arrow-down"></i></a></li>'+
+        '<input title="'+$L('Click to select all the items')+'" type="checkbox"></ul></div></div>'+
+        '<div class="qwp-list" id="qwp-list-{0}" class="list-group"><div id="qwp-list-search-{0}" style="display: none;z-index: 3;position: absolute;"></div></div>';
     },
     _createOpsURI: function(name, ops, page, psize, sortf, sort, params) {
         var p = qwp.uri.createPagerParams(page, psize, sortf, sort);

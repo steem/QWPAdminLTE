@@ -739,9 +739,9 @@ $h = {};
             }
         },
         sameSize: function(o, p) {
-            var padding = qwp.ui.padding(p), border = qwp.ui.border(p);
-            var w = p.width() + padding.left + padding.right + border.left + border.right;
-            var h = p.height() + padding.top + padding.bottom + border.top + border.bottom;
+            var padding = qwp.ui.padding(p), border = qwp.ui.border(p), margin = qwp.ui.margin(p);
+            var w = p.width() + padding.left + padding.right + border.left + border.right + margin.left + margin.right;
+            var h = p.height() + padding.top + padding.bottom + border.top + border.bottom + margin.top + margin.bottom;
             o.width(w).height(h);
         },
         _ols: [],
@@ -885,7 +885,5 @@ function $READY() {
         qwp._r[i]();
     }
     qwp.ui.createUIComponents();
-    setInterval(function(){
-        qwp.ui._timer();
-    }, 300);
+    setInterval(function(){qwp.ui._timer();}, 300);
 }
