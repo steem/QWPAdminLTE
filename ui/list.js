@@ -84,23 +84,23 @@ qwp.list = {
         if (data.total) {
             option.total = Math.ceil(data.total / option.psize);
             option.totalRecords = data.total;
-            $(container + '>a').remove();
+            $(container + '>li').remove();
             if (option.localSort) qwp.sortData(option, data, sortf, sort);
             qwp.list.addItems(name, data.data, false, true);
         } else {
             option.total = 1;
             option.totalRecords = 0;
-            $(container + '>a').remove();
+            $(container + '>li').remove();
             if (!option.data) {
-                $(container).append('<a class="list-group-item" href="#" mtag="nitem">'+(($h.i('',{'class':qwp.ui.icon('info-sign', true)}) + (option.preText || $L('Data is not loaded'))))+'</a>');
+                $(container).append('<a class="list-group-item" href="#" mtag="no_item">'+(($h.i('',{'class':qwp.ui.icon('info-sign', true)}) + (option.preText || $L('Data is not loaded'))))+'</a>');
             } else {
                 qwp.list.addItems(name, option.data, false, true);
             }
             if (option.onNoRecords) qwp.fn(option.onNoRecords)();
         }
         var hdr = qwp.list._h(name);
-        if (option.enablePager) $(hdr + ' .list-pager-count').text(option.total).attr('title', $L('{0} pages, {1} records').format(option.total, data.total));
-        if (option.checkbox) $(hdr + '>.qwp-list-s input')[0].checked = false;
+        if (option.enablePager) $(hdr + ' .qwp-list-pager-count').text(option.total).attr('title', $L('{0} pages, {1} records').format(option.total, data.total));
+        if (option.checkbox) $(hdr + ' .qwp-list-s input')[0].checked = false;
     },
     addItems: function(name, data, prepend, chkSelected) {
         $(qwp.list._s(name)).hide();
@@ -108,7 +108,7 @@ qwp.list = {
         var d = $.isArray(data) ? data : [data], h = '';
         if (d.length === 0) return;
         var container = qwp.list._b(name), first = true;
-        $(container + '>a[mtag=nitem]').remove();
+        $(container + '>a[mtag=no_item]').remove();
         var option = $(container).data('option'), dataConvertor = false, selected = false;
         if (option.dataConvertor) dataConvertor = qwp.fn(option.dataConvertor);
         for (var i = 0, cnt = d.length; i < cnt; ++i) {
@@ -124,20 +124,22 @@ qwp.list = {
         if (prepend) l.prepend(h);
         else l.append(h);
         for (i = 0, cnt = d.length; i < cnt; ++i) {
-            $(container + '>a[mtag=item][rid='+d[i][option.did]+']').data('r', d[i]);
+            $(container + qwp.list._item() + '[rid='+d[i][option.did]+']').data('r', d[i]);
         }
-        var o = $(container + '>a[mtag=item]');
+        var o = $(container + qwp.list._item());
         o.click(function(e){
             qwp.list.showSearch(name, false);
-            if (e.target.tagName == 'INPUT' || e.target.tagName == 'BUTTON' || e.target.tagName == 'I') return;
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.tagName === 'I') return;
             e = $(e.delegateTarget);
             var option = qwp.list.opt(name);
             var rid = e.attr('rid');
-            if (option.selID == rid) {
-                if (option.triggerClickWhenSelected) if (option.onSelection) qwp.fn(option.onSelection)(e.data('r'));
+            if (option.selID === rid) {
+                if (option.triggerClickWhenSelected) {
+                    if (option.onSelection) qwp.fn(option.onSelection)(e.data('r'));
+                }
                 return;
             }
-            if (option.selID) $(container + '>a[mtag=item][rid='+option.selID+']').removeClass('active');
+            if (option.selID) $(container + qwp.list._item() + '[rid='+option.selID+']').removeClass('active');
             option.selID = rid;
             e.addClass('active');
             if (option.onSelection) qwp.fn(option.onSelection)(e.data('r'));
@@ -152,7 +154,7 @@ qwp.list = {
                 var l = $(qwp.list._b(name)), option = l.data('option');
                 e = $(e.delegateTarget);
                 var lpos = l.offset(), w = l.width(), popt = {pos:'right'}, win = $(window),
-                    r = $(container + '>a[mtag=item][rid='+ e.attr('rid') +']').data('r'),
+                    r = $(container + qwp.list._item() + '[rid='+ e.attr('rid') +']').data('r'),
                     pos = e.offset(), h = e.height() + qwp.ui.paddingTopBottom(e), wh = win.height(), ws = win.scrollTop();
                 $.extend(popt, option.popover);
                 var pheight = popt.height;
@@ -191,7 +193,7 @@ qwp.list = {
                 $('#list-popover-' + name + ' .popover-content div[mtag=content]').slimscroll({height: pheight + 'px'});
             }).mouseleave(function(e){
                 e = $(e.delegateTarget);
-                var r = $(container + '>a[mtag=item][rid='+ e.attr('rid') +']').data('r'), option = qwp.list.opt(name), rid = r[option.did];
+                var r = $(container + qwp.list._item() + '[rid='+ e.attr('rid') +']').data('r'), option = qwp.list.opt(name), rid = r[option.did];
                 qwp.list._timer = setTimeout(function(){
                     $('#list-popover-' + name).remove();
                     qwp.list._timer = false;
@@ -203,7 +205,7 @@ qwp.list = {
         if (option.createUIComponents) qwp.fn(option.createUIComponents)(l);
     },
     item: function (name, id) {
-        return $(qwp.list._b(name) + '>a[mtag=item][rid='+id+']').data('r');
+        return $(qwp.list._b(name) + qwp.list._item() + '[rid='+id+']').data('r');
     },
     clearAll: function(name) {
         qwp.list.update(name, qwp.list.opt(name).data);
@@ -213,11 +215,11 @@ qwp.list = {
         if (!option.checkbox) return;
         chk = chk ? true : false;
         var container = qwp.list._b(name);
-        $(qwp.list._b(name) + '>a>input[type=checkbox]').each(function(i, o){
+        $(qwp.list._b(name) + qwp.list._chk()).each(function(i, o){
             if (o.checked !== chk) {
                 o.checked = chk;
                 if (option.onChkSelection) {
-                    qwp.fn(option.onChkSelection)(o.value, o.checked, $(container + '>a[mtag=item][rid='+ o.value +']').data('r'));
+                    qwp.fn(option.onChkSelection)(o.value, o.checked, $(container + qwp.list._item() + '[rid='+ o.value +']').data('r'));
                 }
             }
         });
@@ -228,10 +230,10 @@ qwp.list = {
         var ids = [];
         if (byIdx) {
             for (var i = start; i <= end; ++i) {
-                ids.push($(qwp.list._b(name) + '>a:eq('+i+')').attr('rid'));
+                ids.push($(qwp.list._b(name) + '>li:eq(' + i + ')>a').attr('rid'));
             }
         } else {
-            $(qwp.list._b(name) + '>a>input[type=checkbox]:checked').each(function(i, o) {
+            $(qwp.list._b(name) + qwp.list._chk() + ':checked').each(function (i, o) {
                 ids.push(o.value);
             });
         }
@@ -245,7 +247,7 @@ qwp.list = {
         }
     },
     activeItem: function(name, all) {
-        if (all) return $(qwp.list._b(name) + '>a[mtag=item].active').data('r');
+        if (all) return $(qwp.list._b(name) + qwp.list._item() + '.active').data('r');
         return qwp.list.opt(name).selID;
     },
     clearActiveItem: function(name) {
@@ -264,21 +266,18 @@ qwp.list = {
     },
     updateSize: function(name) {
         var o = $(qwp.list._b(name)), option = o.data('option'), hDelta = 0;
-        if (option.autoHideHeader) {
-            var hdr = $(qwp.list._h(name));
-            if (hdr.is(':visible')) hDelta = hdr.height();
-        }
         if (option.maxHeight) {
-            $(qwp.list._b(name)).slimscroll({height: (option.maxHeight-hDelta)+'px'});
+            $(qwp.list._b(name)).slimscroll({height: (option.maxHeight)+'px'});
             return;
         }
         var pos = o.offset(), c = $(option.container);
-        var h = $(window).height() - pos.top - qwp.ui.paddingTopBottom(o) - qwp.ui.marginBottom(o) - qwp.ui.borderBottomWidth(c) - qwp.ui.paddingBottom(c) - 8,
-            w = c.width() - qwp.ui.paddingLeftRight(c) - qwp.ui.borderLeftRightWidth(c) - 2;
-        if (option.heightDelta) h -= option.heightDelta;
+        var h = $(window).height() - pos.top - qwp.ui.paddingTopBottom(c) - qwp.ui.borderTopBottomWidth(c) - qwp.ui.marginBottom(o) - 8;
+        if (option.heightDelta) {
+            if ($.isNumeric(option.heightDelta)) hDelta = parseInt(option.heightDelta);
+            else hDelta = qwp.fn(option.heightDelta)();
+        }
         h -= hDelta;
-        $(qwp.list._b(name)).css({height:h+'px',width:w+'px'}).slimscroll({height: h+'px',width: w+'px'});
-        qwp.list._resizeTimer[name] = false;
+        $(qwp.list._b(name)).css({height:h+'px',width:'100%'}).slimscroll({height: h+'px',width: '100%'});
     },
     _checkboxChange: function(name, data, container, option) {
         if (!option.checkbox) return;
@@ -288,31 +287,34 @@ qwp.list = {
     },
     _setCheckboxChangeEvent: function(name, container, d, option) {
         var id = d[option.did];
-        $(container + '>a>input[type=checkbox][mtag=chk]').change(function(o){
-            var option = qwp.list.opt(name), r = $(container + '>a[mtag=item][rid='+id+']').data('r');
+        $(container + qwp.list._chk() + '[mtag=chk]').change(function(o){
+            var option = qwp.list.opt(name), r = $(container + qwp.list._item() + '[rid='+id+']').data('r');
             o = $(o.delegateTarget);
             if (option.onChkSelection) qwp.fn(option.onChkSelection)(o.val(), o[0].checked, r);
-            o = $(qwp.list._b(name) + '>a>input[type=checkbox]:checked');
-            var e = $(qwp.list._h(name) + '>.qwp-list-s input');
+            o = $(qwp.list._b(name) + qwp.list._chk() + ':checked');
+            var e = $(qwp.list._h(name) + ' .qwp-list-s input');
             if (e.length > 0) e[0].checked = o.length > 0;
         });
     },
     _createItem: function(r, name, option, i, dataConvertor, active, first) {
         var did = r[option.did], h = dataConvertor ? dataConvertor(r, did, first) : '';
+        if (!qwp.isString(h)) {
+            h = $h.h4(h.title, {'class':'list-group-item-heading'}) + $h.p(h.text, {'class':'list-group-item-text'});
+        }
         if (option.checkbox) h += $h.checkbox({value:did, mtag:'chk'});
-        return $h.a(h,{'class':'list-group-item' + (active ? ' active' : ''), style:{cursor:'pointer'},mtag:'item',rid:did});
+        return $h.li($h.a(h, {'class': 'list-group-item' + (active ? ' active' : ''), href: '#', mtag: 'item', rid: did}));
     },
     _customize: function(name, option) {
         var container = qwp.list._h(name);
         if (option.enablePager || option.search || option.sortList || option.checkbox) {
             if (option.enablePager) {
-                $(container + ' .list-pager-input').click(function (o) {
+                $(container + ' .qwp-list-pager-input').click(function (o) {
                     o = $(o.delegateTarget);
                     o.addClass('open');
-                    $(container + ' .list-pager-input input').focus().select().css('width', (o.width() - 2) + 'px');
+                    $(container + ' .qwp-list-pager-input input').focus().select().css('width', (o.width() - 2) + 'px');
                 });
-                $(container + ' .list-pager-input input').change(function (o) {
-                    $(container + ' .list-pager-input span').text($(o.target).val());
+                $(container + ' .qwp-list-pager-input input').change(function (o) {
+                    $(container + ' .qwp-list-pager-input span').text($(o.target).val());
                 });
             } else {
                 $(container + ' .qwp-list-pager').hide();
@@ -346,20 +348,20 @@ qwp.list = {
                     e = $(e.delegateTarget);
                     var option = qwp.list.opt(name), sortf = e.data('field');
                     if (option.sortf == sortf) return;
-                    if (option.sortf) $(qwp.list._h(name) + ">.qwp-list-s .dropdown-menu>li[data-field='"+option.sortf+"']").removeClass('active');
+                    if (option.sortf) $(qwp.list._h(name) + " .qwp-list-s .dropdown-menu>li[data-field='"+option.sortf+"']").removeClass('active');
                     option.sortf = sortf;
-                    $(qwp.list._h(name) + ">.qwp-list-s .dropdown-menu>li[data-field='"+sortf+"']").addClass('active');
+                    $(qwp.list._h(name) + " .qwp-list-s .dropdown-menu>li[data-field='"+sortf+"']").addClass('active');
                     qwp.list.load(name);
                 });
             } else {
                 $(container + ' .qwp-list-s > li').hide();
             }
             if (option.checkbox) {
-                $(container + '>.qwp-list-s input').change(function(e){
+                $(container + ' .qwp-list-s input').change(function(e){
                     qwp.list.checkAll(name, e.delegateTarget.checked);
                 });
             } else {
-                $(container + '>.qwp-list-s input').hide();
+                $(container + ' .qwp-list-s input').hide();
             }
             if (option.autoHideHeader) {
                 $(option.container).mouseenter(function(){
@@ -393,6 +395,12 @@ qwp.list = {
     _s: function(name) {
         return '#qwp-list-search-' + name;
     },
+    _chk: function(){
+        return '>li>a>input[type=checkbox]';
+    },
+    _item: function() {
+        return '>li>a[mtag=item]';
+    },
     _timer: false,
     _goPage: function(name, p) {
         var option = qwp.list.opt(name), o = $(qwp.list._h(name) + ' input[qwp=number]'), v = parseInt(o.val());
@@ -425,21 +433,21 @@ qwp.list = {
         return option.search ? $(qwp.list._s(name) + ' form').serialize() : '';
     },
     _getTmpl: function() {
-        return '<div class="qwp-list-header" id="qwp-list-header-{0}" style="display:none;margin-bottom: 1px">'+
-        '<div class="qwp-list-pager"><ul class="pagination"><li><a onclick="qwp.list._goPage(\'{0}\', \'f\')" href="#" title="'+$L('First page')+'" role="button"><i class="glyphicon glyphicon-step-backward"></i></a></li>'+
+        return '<table class="qwp-list-header" id="qwp-list-header-{0}" style="display:none;">'+
+        '<tr><td class="qwp-list-pager"><ul class="pagination"><li><a onclick="qwp.list._goPage(\'{0}\', \'f\')" href="#" title="'+$L('First page')+'" role="button"><i class="glyphicon glyphicon-step-backward"></i></a></li>'+
         '<li><a onclick="qwp.list._goPage(\'{0}\', \'p\')" href="#" title="'+$L('Previous page')+'" role="button"><i class="glyphicon glyphicon-chevron-left"></i></a></li>'+
         '<li><a onclick="qwp.list._goPage(\'{0}\', \'n\')" href="#" title="'+$L('Next page')+'" role="button"><i class="glyphicon glyphicon-chevron-right"></i></a></li>'+
         '<li><a onclick="qwp.list._goPage(\'{0}\', \'l\')" href="#" title="'+$L('Last page')+'" role="button"><i class="glyphicon glyphicon-step-forward"></i></a></li>'+
-        '<li><a class="list-pager-input" title="'+$L('Press enter to switch page')+'"><span>1</span>' +
+        '<li><a class="qwp-list-pager-input" title="'+$L('Press enter to switch page')+'"><span>1</span>' +
         '<input onblur="this.parentNode.className=this.parentNode.className.replace(\' open\', \'\')" qwp="number" props="defaultValue=1|minValue=1|enter=qwp.list._goPage(\'{0}\', this.value)" type="text" size="2" value="1" title="'+$L('Press enter to switch page')+'"></a></li>'+
         '<li><a class="qwp-list-search"><i class="glyphicon glyphicon-search" title="'+$L('Click to show search options')+'"></i></a></li>'+
-        '<li><a class="list-pager-count" qwp="count">0</a></li>'+
-        '</ul></div>'+
-        '<div class="qwp-list-s">'+
+        '<li><a class="qwp-list-pager-count" qwp="count">0</a></li>'+
+        '</ul></td>'+
+        '<td class="qwp-list-s" align="right">'+
         '<ul class="pagination"><li><a qwp="sort-options" title="'+$L('Click to show sort option')+'" class="tooltip-info dropdown-toggle" data-toggle="dropdown" role="button"><i class="glyphicon glyphicon-sort-by-attributes"></i></a><ul class="dropdown-menu">{1}</ul></li>'+
         '<li><a onclick="qwp.list._changeOrder(\'{0}\', this)" href="#" title="'+$L('Click to toggle sort order')+'" role="button"><i class="glyphicon glyphicon-arrow-down"></i></a></li>'+
-        '<input title="'+$L('Click to select all the items')+'" type="checkbox"></ul></div></div>'+
-        '<div class="qwp-list" id="qwp-list-{0}" class="list-group"><div id="qwp-list-search-{0}" style="display: none;z-index: 3;position: absolute;"></div></div>';
+        '<input title="'+$L('Click to select all the items')+'" type="checkbox"></ul></td></tr></table>'+
+        '<ul class="qwp-list list-group" id="qwp-list-{0}"><div id="qwp-list-search-{0}" style="display: none;z-index: 3;position: absolute;"></div></ul>';
     },
     _createOpsURI: function(name, ops, page, psize, sortf, sort, params) {
         var p = qwp.uri.createPagerParams(page, psize, sortf, sort);
@@ -467,15 +475,7 @@ qwp.list = {
     _createResize: function(name) {
         var resize = function(){
             qwp.list.updateSize(name);
-            qwp.list._resizeTimer[name] = false;
         };
-        qwp.list._fnResize[name] = function() {
-            if (qwp.list._resizeTimer[name]) return;
-            qwp.list._resizeTimer[name] = qwp.ui.whenVisible(qwp.list._b(name), resize);
-        };
-        qwp.ui.resize(qwp.list._fnResize[name]);
-        qwp.list.updateSize(name);
-    },
-    _resizeTimer:{},
-    _fnResize:{}
+        qwp.ui.resize(resize, true, qwp.list._b(name));
+    }
 };

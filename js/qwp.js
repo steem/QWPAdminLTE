@@ -188,7 +188,7 @@ $h = {};
             return $h.tagStart(tag, attrs);
         }
     }
-    var tag, htmlElements = ['p', 'h1', 'h2', 'h3', 'ul', 'li', 'b', 'div', 'option', 'select', 'thead',
+    var tag, htmlElements = ['p', 'h1', 'h2', 'h3', 'h4', 'ul', 'li', 'b', 'div', 'option', 'select', 'thead',
         'label', 'span', 'em', 'table', 'tbody', 'th', 'tr', 'td', 'pre', 'code', 'option', 'i', 'a', 'nav', 'textarea', 'button', 'form'];
     for (var i = 0, cnt = htmlElements.length; i < cnt; ++i) {
         tag = htmlElements[i];
@@ -647,19 +647,37 @@ $h = {};
                 qwp.ui._fns[i](p);
             }
         },
-        resize: function(f, timer) {
-            if (timer) {
-                $(window).resize(function (e) {
-                    if (f.inResize) return;
-                    f.inResize = true;
-                    setTimeout(function(){
-                        f(e);
-                        f.inResize = false;
-                    }, 200);
-                });
-            } else {
+        resize: function(f, timer, p, params) {
+            if (!timer) {
                 $(window).resize(f);
+                return;
             }
+            var inResize = false;
+            var resize = function () {
+                f(params);
+                inResize = false;
+            }, resizeTimer = function () {
+                if (p) qwp.ui.whenVisible(p, resize);
+                else resize();
+            };
+            $(window).resize(function () {
+                if (inResize) return;
+                inResize = true;
+                setTimeout(resizeTimer, 200);
+            });
+            setTimeout(resizeTimer, 200);
+        },
+        autoHeight: function (s, delta) {
+            var o = $(s), pos = o.offset();
+            var h = $(window).height() - pos.top - qwp.ui.paddingTopBottom(o) - qwp.ui.borderTopBottomWidth(o) - qwp.ui.marginBottom(o);
+            if (delta) {
+                if ($.isNumeric(delta)) delta = parseInt(delta);
+                else delta = qwp.fn(delta)();
+            } else {
+                delta = 0;
+            }
+            h -= delta;
+            o.css({height:h+'px'});
         },
         e: function(s) {
             s = $(s);
