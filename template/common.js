@@ -27,9 +27,6 @@ function createICheckbox(p) {
         checkboxClass: 'icheckbox_square-blue',
         radioClass: 'iradio_square-blue'
     });
-    $('.control-sidebar').click(function (e) {
-        if (e.target.tagName === 'I' && $(e.target).attr('mtag') === 'close') toggleSidebar(e);
-    });
 }
 function setAdvSearchOption(h) {
     $('#control-sidebar-search-tab').html(h);
@@ -46,6 +43,9 @@ function toggleSidebar(e) {
     }
 }
 function initAdminLTE() {
+    $('.control-sidebar > a[mtag=close]').click(function (e) {
+        toggleSidebar(e);
+    });
     qwp.ui.push(createICheckbox);
 }
 qwp.r(initAdminLTE);

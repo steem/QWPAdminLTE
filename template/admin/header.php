@@ -5,8 +5,8 @@ qwp_render_header();
 <div class="wrapper">
     <header class="main-header">
         <a href="#" class="logo">
-            <span class="logo-mini"><b><?php EL(PRODUCT_NAME_SHORT);?></b></span>
-            <span class="logo-lg"><b><?php EL(PRODUCT_NAME_SHORT);?></b>AdminLTE</span>
+            <span class="logo-mini"><b><?php EL(PRODUCT_NAME);?></b></span>
+            <span class="logo-lg"><b><?php EL(PRODUCT_NAME);?></b></span>
         </a>
         <nav class="navbar navbar-static-top">
 <?php if (qwp_has_sub_modules()) {?>

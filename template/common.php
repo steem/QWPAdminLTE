@@ -107,7 +107,7 @@ function render_side_bar() {
     global $qwp_show_settings;
 ?>
 <aside class="control-sidebar control-sidebar-light">
-    <a href="#" style="position: absolute;right: 6px;z-index: 1;" title="<?php EL('Close side bar');?>"><i mtag="close" class="fa fa-close"></i></a>
+    <a href="#" style="position: absolute;right: 6px;z-index: 1;" mtag="close" title="<?php EL('Close side bar');?>"><i class="fa fa-close"></i></a>
     <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
         <li class="active"><a href="#control-sidebar-search-tab" style="font-weight: bold" data-toggle="tab"><i class="fa fa-search"></i> <?php EL('Search Options');?></a></li>
 <?php if (isset($qwp_show_settings) && $qwp_show_settings) { ?>
