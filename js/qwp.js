@@ -881,7 +881,6 @@ $h = {};
         init: function() {
             var tmp = location.search ? location.search.replace(/(&s\[.+\]=[%|\w|\+\-\.\+]+)|(&s%5b.+%5d=[%|\w|\+\-\.\+]+)/i, '').replace(/(&s\[.+\]=)|(&s%5b.+%5d=)/i, '') : '';
             var base = './';
-            if (!tmp && qwp.page) base = './?' + qwp.page.m;
             qwp.uri.baseUrl = base + (tmp ? tmp : '');
             qwp.uri.baseUrlHasParams = !!tmp;
             qwp.uri.curUrl = base + (location.search ? location.search : '');
