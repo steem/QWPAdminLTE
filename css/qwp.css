@@ -284,6 +284,35 @@ div[qwp='container'] > .slimScrollDiv > .table-responsive{
     border-bottom-right-radius: 4px!important;
     border-bottom-left-radius: 4px!important;
 }
+.chat-messages-loader {
+    text-align: center;
+}
+.qwp-send-message {
+    width: 100%;
+    border-top: 1px solid #00c0ef;
+    padding: 8px 6px 8px 6px;
+    background-color: #fff;
+    box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.15) inset;
+}
+.qwp-send-message textarea[mtag=send-msg] {
+    background: transparent;
+    width: 100%;
+    height: 43px;
+    font-size: 14px;
+    line-height: 18px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    word-wrap: break-word;
+    outline: none;
+    border: none;
+    padding: 0 82px 0 0;
+    box-shadow: none;
+}
+.qwp-send-message button[mtag=send-msg] {
+    position: absolute;
+    right: 6px;
+    width: 80px;
+}
 .modal-dialog{
     margin: auto!important;
 }

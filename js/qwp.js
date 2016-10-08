@@ -217,6 +217,14 @@ $h = {};
         }
         return h;
     };
+    $h.imgBase64Src = function (data, type) {
+        if (!type) type = 'jpeg';
+        return 'data:image/' + type + ';base64,' + data;
+    };
+    $h.imgBase64 = function (data, type) {
+        if (!type) type = 'jpeg';
+        return $h.img({src:'data:image/' + type + ';base64,' + data});
+    };
     $h.spacer = function(attr) {
         var opt = {border:'0', src:'img/spacer.gif', height:'1px'};
         $.extend(opt, attr);
@@ -235,6 +243,9 @@ $h = {};
         },
         isString: function(v) {
             return $.type(v) == 'string';
+        },
+        isUndefined: function(v) {
+            return $.type(v) == 'undefined';
         },
         toJson: function(d, v) {
             var j = false;
@@ -804,7 +815,7 @@ $h = {};
                 if (mp.length === 0) u = u.replace(/p=(\w+)/, '');
                 else u = u.replace(/p=(\w+)/, 'p='+mp);
             }
-            return u + (qwp.uri.curUrlNoSortHasParams ? '&' : '?') + p;
+            return u + (qwp.uri.curUrlNoSortHasParams ? '&' : '') + p;
         },
         join: function() {
             var p = '', sep = '';
@@ -881,12 +892,12 @@ $h = {};
         init: function() {
             var tmp = location.search ? location.search.replace(/(&s\[.+\]=[%|\w|\+\-\.\+]+)|(&s%5b.+%5d=[%|\w|\+\-\.\+]+)/i, '').replace(/(&s\[.+\]=)|(&s%5b.+%5d=)/i, '') : '';
             var base = './';
-            qwp.uri.baseUrl = base + (tmp ? tmp : '');
-            qwp.uri.baseUrlHasParams = !!tmp;
-            qwp.uri.curUrl = base + (location.search ? location.search : '');
+            qwp.uri.baseUrl = base + (tmp ? tmp : '?');
+            qwp.uri.baseUrlHasParams = tmp && tmp.indexOf('=') != -1;
+            qwp.uri.curUrl = (location.search ? './' + location.search : qwp.uri.baseUrl);
             tmp = qwp.uri.clearSortParams(qwp.uri.curUrl);
             qwp.uri.curUrlNoSort = tmp;
-            qwp.uri.curUrlNoSortHasParams = !!tmp;
+            qwp.uri.curUrlNoSortHasParams = tmp && tmp.indexOf('=') != -1;
             qwp.uri.hasParams = location.search ? true : false;
         }
     };

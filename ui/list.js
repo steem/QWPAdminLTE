@@ -27,8 +27,9 @@ qwp.list = {
         if (!op) op = 'list';
         var p = qwp.list._formData(name, option);
         if (params) {
+            if (p) p += '&';
             if (!qwp.isString(params)) params = $.param(params);
-            params = p + '&' + params;
+            params = p + params;
         } else {
             params = p;
         }
@@ -46,7 +47,7 @@ qwp.list = {
                     qwp.list.update(name, data, page, psize, sortf, sort);
                 } else {
                     qwp.notice(res.msg ? res.msg : (notes.failed ? notes.failed : $L('Failed to load list data')));
-                    qwp.list._stopLoading(name)
+                    qwp.list._stopLoading(name);
                 }
             }
         });
@@ -273,8 +274,8 @@ qwp.list = {
         var pos = o.offset(), c = $(option.container);
         var h = $(window).height() - pos.top - qwp.ui.paddingTopBottom(c) - qwp.ui.borderTopBottomWidth(c) - qwp.ui.marginBottom(o) - 8;
         if (option.heightDelta) {
-            if ($.isNumeric(option.heightDelta)) hDelta = parseInt(option.heightDelta);
-            else hDelta = qwp.fn(option.heightDelta)();
+            if ($.isNumeric(option.heightDelta)) hDelta += parseInt(option.heightDelta);
+            else hDelta += qwp.fn(option.heightDelta)();
         }
         h -= hDelta;
         $(qwp.list._b(name)).css({height:h+'px',width:'100%'}).slimscroll({height: h+'px',width: '100%'});
@@ -473,9 +474,8 @@ qwp.list = {
         return qwp.uri.createUrlWithoutSortParams(p, mp);
     },
     _createResize: function(name) {
-        var resize = function(){
+        qwp.ui.resize(function(){
             qwp.list.updateSize(name);
-        };
-        qwp.ui.resize(resize, true, qwp.list._b(name));
+        }, true, qwp.list._b(name));
     }
 };

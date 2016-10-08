@@ -1,4 +1,8 @@
 <?php
+function qwp_render_add_im() {
+    qwp_add_js_code(QWP_UI_ROOT . '/loading.js');
+    qwp_add_js_code(QWP_UI_ROOT . '/im.js');
+}
 function get_notification_count()
 {
     return 10;
