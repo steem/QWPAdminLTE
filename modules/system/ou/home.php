@@ -67,6 +67,6 @@ qwp_create_dialog_with_form("dialog_user", array(
         </div>
     </form>
 </qwp>
-<div class="user-div">
+<div class="row">
 <div id="users-table" class="row qwp-table"></div>
 </div>

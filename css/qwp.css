@@ -316,6 +316,11 @@ div[qwp='container'] > .slimScrollDiv > .table-responsive{
 .modal-dialog{
     margin: auto!important;
 }
+@media screen and (max-width: 1366px) {
+    .qwp-list-pager-input {
+        min-width: 20px!important;
+    }
+}
 @media screen and (max-width: 1050px) {
     .btn > span {
         display: none;

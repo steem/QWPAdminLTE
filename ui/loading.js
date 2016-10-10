@@ -20,7 +20,7 @@ qwp.loading = {
                 $(container + ">div[qwp='line-loading'] table").attr('width', w + 'px');
                 p += 2;
                 if (p > 100) p = 0;
-            }, 200)
+            }, 200);
         },
         hide: function(container) {
             if (!qwp.loading.line.timer[container]) {

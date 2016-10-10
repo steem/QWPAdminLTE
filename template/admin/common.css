@@ -1,6 +1,6 @@
-.content-wrapper > .content {
-    padding: 6px 6px 0 6px!important;
-}
 #toast-container {
     top: 56px!important;
+}
+.content-wrapper > .content {
+    padding: 8px 23px 8px 23px!important;
 }
