@@ -212,6 +212,7 @@ qwp.table = {
     },
     load: function(tableName, notes, page, psize, sortf, sort, op, params, noRemoveNotice) {
         qwp.table.loading(tableName);
+        qwp.table.updateSize(tableName);
         var option = $(qwp.table.container(tableName)).data('option');
         if (!notes) notes = option.loadingNotes;
         qwp.notice(notes && notes.success ? notes.success : $L('Table data is loading...'));
@@ -247,6 +248,7 @@ qwp.table = {
                     qwp.notice(res.msg ? res.msg : (notes && notes.failed ? notes.failed : $L('Failed to load table data')));
                     qwp.table.stopLoading(tableName);
                 }
+                qwp.table.updateSize(tableName);
             }
         });
     },

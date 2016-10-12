@@ -124,8 +124,8 @@ function qwp_scan_acls_in_directory(&$modules, &$pages, &$ops, $dir, $level, $pa
                 $ops[$parent][$op_name] = $op_name;
             } else if ($is_op !== false) {
                 // page ops
-                $op_name = substr($item, $is_op + 1);
-                $page_key = $parent . '#' . substr($item, 0, $is_op);
+                $op_name = substr($item, $is_op + 4);
+                $page_key = $parent . '#' . substr($item, 0, $is_op - 1);
                 if (!isset($ops[$page_key])) $ops[$page_key] = array();
                 $ops[$page_key][$op_name] = $op_name;
             } else {
