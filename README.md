@@ -9,10 +9,10 @@ You need to import tables into mysql. The sql files are in db directory.
 
 * Normal
 
-![Normal](https://github.com/steem/QWPAdminLTE/tree/master/doc/normal.jpg)
+![Normal](https://github.com/steem/QWPAdminLTE/blob/master/doc/normal.jpg)
 
 * Small device
 
-![Snapshot 1](https://github.com/steem/QWPAdminLTE/tree/master/doc/small_device1.jpg)
+![Snapshot 1](https://github.com/steem/QWPAdminLTE/blob/master/doc/small_device1.jpg)
 
-![Snapshot 2](https://github.com/steem/QWPAdminLTE/tree/master/doc/small_device2.jpg)
+![Snapshot 2](https://github.com/steem/QWPAdminLTE/blob/master/doc/small_device2.jpg)
