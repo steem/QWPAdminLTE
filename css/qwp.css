@@ -193,6 +193,9 @@ div[qwp='container'] > .slimScrollDiv > .table-responsive{
     padding-top: 5px!important;
     padding-bottom: 0!important;
 }
+.qwp-list {
+    margin-bottom: 0;
+}
 .qwp-list-header {
     width: 100%;
 }

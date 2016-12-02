@@ -109,5 +109,6 @@ function L($t) {
     return $t;
 }
 function EL($t) {
-    echo(call_user_func_array('L', func_get_args()));
+    $args = func_get_args();
+    echo(call_user_func_array('L', $args));
 }

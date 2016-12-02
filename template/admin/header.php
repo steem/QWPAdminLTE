@@ -2,6 +2,7 @@
 require_once(QWP_ROOT . '/security/admin_nav.php');
 qwp_render_header();
 ?><body class="hold-transition skin-blue fixed sidebar-mini">
+<?php render_modify_pwd_dialog();?>
 <div class="wrapper">
     <header class="main-header">
         <a href="#" class="logo">

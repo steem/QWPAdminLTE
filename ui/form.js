@@ -147,9 +147,19 @@ qwp.form = {
             };
         }
         if (v.invalidHandler) opt.invalidHandler = window[v.invalidHandler];
-        aF.validate(opt);
+        if(v.enableFocusout) opt.onfocusout = function(element){
+            this.element(element);
+        }
+        if (v.successClass){
+            opt.success = v.successClass;
+        }
+        var validator = aF.validate(opt);
+        if(v.cacheValidator) qwp.form._cachedFormValidators[formSelector] = validator;
         if (!v.noSubmit) qwp.form._attachActionHandler(formSelector, v);
         qwp.form._attachConfirm(formSelector, v);
+    },
+    getValidator: function (formSelector) {
+        return qwp.form._cachedFormValidators[formSelector];
     },
     _checkFile: function(opt, item) {
         var v = item.val();
@@ -291,5 +301,6 @@ qwp.form = {
             }
         }
         return qwp.form._invalidateTexts[ruleName] ? qwp.form._invalidateTexts[ruleName] : qwp.form._invalidateTexts._default;
-    }
+    },
+    _cachedFormValidators:{}
 };

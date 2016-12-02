@@ -93,10 +93,10 @@ function render_user_nav()
         </li>
         <li class="user-footer">
             <div class="pull-left">
-                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                <a href="#dialog_modify_pwd" data-toggle="modal" class="btn btn-default btn-flat"><?php EL('Change Password');?></a>
             </div>
             <div class="pull-right">
-                <a href="<?php echo(qwp_uri_logout());?>" class="btn btn-default btn-flat">Sign out</a>
+                <a href="<?php echo(qwp_uri_logout());?>" class="btn btn-default btn-flat"><?php EL('Sign out');?></a>
             </div>
         </li>
     </ul>
@@ -123,4 +123,15 @@ function render_side_bar() {
 </aside>
 <div class="control-sidebar-bg"></div>
 <?php
+}
+function render_modify_pwd_dialog()
+{
+    qwp_create_dialog("dialog_modify_pwd", array(
+        'width' => '460px',
+        'height' => '300px',
+        'url' => qwp_uri_page('modify_pwd', null, 'passport'),
+        'ok' => 'modifyPwd',
+        'title' => L('Change password'),
+        'inFrame' => true,
+    ));
 }

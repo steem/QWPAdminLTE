@@ -23,7 +23,7 @@ function _qwp_process_ops(&$msg, &$data, &$msg_type, &$ret) {
         }
     } catch (PDOException $e) {
         if ($e->errorInfo[1] == 1062) {
-            $msg = L("Duplicated record when doing ops, please check the parameters!");
+            if (!$msg) $msg = L("Duplicated record when doing ops, please check the parameters!");
         } else {
             $msg = L("Failed to execute query: ") . (IN_DEBUG ? $e->query_string : $e->getMessage());
         }

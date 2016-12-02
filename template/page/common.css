@@ -1,3 +1,6 @@
+body {
+    padding: 0!important;
+}
 .content-wrapper {
     margin-left: 0!important;
     background-color: #fff!important;

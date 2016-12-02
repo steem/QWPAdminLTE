@@ -335,3 +335,7 @@ function qwp_validate_form() {
     global $F;
     return qwp_validate_data($F, $rules, $filters);
 }
+function qwp_get_rule_file_path($rule_name) {
+    global $MODULE_ROOT;
+    return $MODULE_ROOT . '/form_' . $rule_name . '_validator.php';
+}

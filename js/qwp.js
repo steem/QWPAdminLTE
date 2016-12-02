@@ -471,6 +471,9 @@ $h = {};
             qwp._lastNotice = {id:toastr[type](notice, title), t:t, txt: notice};
             return qwp._lastNotice;
         },
+        topNotice: function (notice, opt) {
+            (parent ? parent.qwp : qwp).notice(notice, opt);
+        },
         removeNotice: function() {
             if (qwp._lastNotice) {
                 toastr.clear(qwp._lastNotice.id);
@@ -750,7 +753,7 @@ $h = {};
             }
             frame.attr("src", page);
         },
-        overlay: function(show, txt, parent, transparent, notShowLoading) {
+        overlay: function(show, txt, parent, transparent, notShowLoading, top) {
             var p = $(parent ? parent : 'body'), zIndex = parent ? '1' : '999999', id = qwp.ui._ols.length + 1;
             qwp.ui._ols.push(id);
             if (p.find('> div[qwp=overlay]').length === 0) {
@@ -759,7 +762,7 @@ $h = {};
             }
             var o = p.find('> div[qwp=overlay]');
             if (txt) o.find('> span[mtag=txt]').html(txt);
-            o.css({left: '0', top: '0'});
+            o.css({left: '0', top: top ? top : '0'});
             if (show) {
                 qwp.ui.sameSize(o, p);
                 o.show();

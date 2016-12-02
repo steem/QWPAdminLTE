@@ -10,6 +10,7 @@ $form_rule = array(
         'pwd' => array(
             'required' => true,
             'rangelength' => array(6, 32),
+            'password' => true,
         ),
     ),
     'actionMessage' => L('Login is in processing, please wait...'),

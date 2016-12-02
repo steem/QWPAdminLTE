@@ -632,7 +632,7 @@ qwp.table = {
                         qwp.ui.addTooltip({value:curPage,'class':'table-pager-input',
                         title:$L('Current page, press ENTER to switch page.')}))),
             h = "",
-            showCnt = 2,
+            showCnt = option.pagerShownCount || 2,
             txtFirstPage = $L('First page'),
             txtLastPage = $L('Last page'),
             txtPrePage = $L('Previous page'),
@@ -706,6 +706,7 @@ qwp.table = {
             qwp.table.updateSize(name);
             qwp.table._resizeTimer[name] = false;
         };
+        resize();
         qwp.table._fnResize[name] = function() {
             if (qwp.table._resizeTimer[name]) return;
             qwp.table._resizeTimer[name] = qwp.ui.whenVisible(qwp.table.container(name), resize);
