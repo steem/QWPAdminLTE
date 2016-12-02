@@ -126,6 +126,7 @@ function render_side_bar() {
 }
 function render_modify_pwd_dialog()
 {
+    qwp_ui_init_dialog();
     qwp_create_dialog("dialog_modify_pwd", array(
         'width' => '460px',
         'height' => '300px',
